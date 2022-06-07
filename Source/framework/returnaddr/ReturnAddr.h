@@ -7,11 +7,7 @@
 
 namespace Framework {
     namespace ReturnAddr {
-        static Pattern jmp_r14_pattern(
-                "\x41\xFF\xE6",
-                "xxx"
-        );
-        static void *jmp_r14_addr = nullptr;
+        static void *ret_instruction_addr = nullptr; // Opcode for Ret Instruction: C3
 
         namespace {
             Pattern call_instruction(
@@ -27,7 +23,6 @@ namespace Framework {
         template<typename Ret, typename... Args>
         static __attribute((noinline, optimize("O0"))) auto invoke(void *method, Args ...args) -> Ret {
             static bool mutated = false;
-            static void *afterCall;
 
             if (!mutated) {
                 void *instruction = rip();
@@ -49,22 +44,15 @@ namespace Framework {
 
                 memcpy(static_cast<char *>(base) + 12, base, length);
 
-                Assembly::writeAbsPush(base, static_cast<char *>(jmp_r14_addr));
+                Assembly::writeAbsPush(base, static_cast<char *>(ret_instruction_addr));
 
                 *(static_cast<char *>(base) + FRAMEWORK_HOOKING_ABS_PUSH_INSTRUCTION_LENGTH +
                   callRegisterOffset) += 0x10; // call to jmp
-                afterCall =
-                        static_cast<char *>(base) + FRAMEWORK_HOOKING_ABS_PUSH_INSTRUCTION_LENGTH + callRegisterOffset +
-                        1;
 
                 Memory::protect(base, PROT_READ | PROT_EXEC);
                 mutated = true;
             }
 
-            __asm volatile(
-                    "mov %0,%%r14;\n"
-                    : : "r"(afterCall)
-                    );
             ((Ret (*)(Args...)) method)(args...);
             __asm("nop"); // we need 12 more bytes for the push instruction
             __asm("nop");
@@ -78,6 +66,8 @@ namespace Framework {
             __asm("nop");
             __asm("nop");
             __asm("nop"); // This one seems to be useless, but keep it for safety reasons
+            
+            // Indirect return, carrying the return value of method
         }
     }
 }
