@@ -8,7 +8,7 @@
 
 #include "framework/Framework.h"
 
-__attribute__((section(".text"))) unsigned char legit_jmp_r14[] = { 0xCC, 0x41, 0xFF, 0xE6 };
+__attribute__((section(".text"))) unsigned char legit_ret[] = { 0xCC, 0xC9, 0xC3, 0xCC, 0xCC };
 
 struct test_struct {
     int a;
@@ -17,9 +17,7 @@ struct test_struct {
 };
 
 int no_args() {
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -27,18 +25,14 @@ int one_arg(test_struct a) {
     assert(a.a == 1);
     assert(a.b == 2);
     assert(a.c == 3);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
 int two_args(short a, int b) {
     assert(a == 1);
     assert(b == 2);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -46,9 +40,7 @@ int three_args(short a, int b, long c) {
     assert(a == 1);
     assert(b == 2);
     assert(c == 3);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -57,9 +49,7 @@ int four_args(short a, int b, long c, unsigned int d) {
     assert(b == 2);
     assert(c == 3);
     assert(d == 4);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -69,9 +59,7 @@ int five_args(short a, int b, long c, unsigned int d, long long int e) {
     assert(c == 3);
     assert(d == 4);
     assert(e == 5);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -84,9 +72,7 @@ int six_args(short a, int b, long c, unsigned int d, long long int e, test_struc
     assert(f.a == 1);
     assert(f.b == 2);
     assert(f.c == 3);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -98,9 +84,7 @@ int seven_args(short a, int b, long c, unsigned int d, long long int e, short f,
     assert(e == 5);
     assert(f == 6);
     assert(g == 7);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -113,9 +97,7 @@ int eight_args(short a, int b, long c, unsigned int d, long long int e, short f,
     assert(f == 6);
     assert(g == 7);
     assert(h == 8);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -129,9 +111,7 @@ int nine_args(short a, int b, long c, unsigned int d, long long int e, short f, 
     assert(g == 7);
     assert(h == 8);
     assert(i == 9);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -147,9 +127,7 @@ int ten_args(short a, int b, long c, unsigned int d, long long int e, short f, i
     assert(h == 8);
     assert(i == 9);
     assert(j == 10);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -168,9 +146,7 @@ int eleven_args(short a, int b, long c, unsigned int d, long long int e, short f
     assert(k.a == 1);
     assert(k.b == 2);
     assert(k.c == 3);
-    Dl_info dl_info;
-    dladdr(__builtin_extract_return_addr(__builtin_return_address(0)), &dl_info);
-    assert(!strcmp(dl_info.dli_sname, "legit_jmp_r14"));
+    assert(__builtin_return_address(0) == legit_ret + 1);
     return 1337;
 }
 
@@ -217,13 +193,17 @@ int main() {
     testStruct.b = 2;
     testStruct.c = 3;
 
-    printf("starting tests\n");
+    printf("Starting tests\n");
 
-    Framework::ReturnAddr::jmp_r14_addr = Framework::PatternScan::searchPattern(Framework::ReturnAddr::jmp_r14_pattern, &legit_jmp_r14 - 0x30, &legit_jmp_r14 + 0x30);
-    assert(Framework::ReturnAddr::jmp_r14_addr != nullptr);
-    printf("found jmp_r14 via signature scanning\n");
+    Framework::ReturnAddr::ret_instruction_addr = Framework::PatternScan::searchPattern(Pattern("\xC9\xC3", "xx"), &legit_ret, &legit_ret + sizeof(legit_ret));
+    assert(Framework::ReturnAddr::ret_instruction_addr != nullptr);
+    printf("Found ret_instruction at %p\n", Framework::ReturnAddr::ret_instruction_addr);
 
     /*
+     * We need 5 bytes to setup a hook.
+     * The last argument (8) tells the hooking function to copy 8 bytes.
+     * This was chosen, because this approach does not need a disassembler engine.
+     * 
      * <+0>:	push   %rbp
      * <+1>:	mov    %rsp,%rbp
      * <+4>:	sub    $0x50,%rsp
@@ -266,8 +246,6 @@ int main() {
     printf("eleven_args test passed\n");
 
     printf("---------------------------------------------\n");
-    printf("all tests passed\n");
+    printf("All tests passed\n");
     printf("---------------------------------------------\n");
-
-    __asm("leave; ret;");
 }
