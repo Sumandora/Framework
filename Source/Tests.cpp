@@ -184,8 +184,19 @@ void test() {
 	printf("seven_args test passed\n");
 
 	test2();
-
 }
+
+void* hookMe_retaddr;
+int hookMe(int a, int b, int c) {
+	hookMe_retaddr = __builtin_return_address(0); 
+	return a + b + c;
+}
+
+void* orig_hookMe;
+int __attribute((optimize("O0"))) hook(int a, int b, int c) {
+	return reinterpret_cast<int(*)(int, int, int)>(orig_hookMe)(a * 2, b * 2, c * 2);
+}
+
 /*
  * This method has to be kept at O0, because if anything else is used it will crash if you try to reuse the invokers from the Return Address Spoofer
  */
@@ -221,6 +232,17 @@ int __attribute((optimize("O0"))) main() {
 	orig_eleven_args = Framework::Hooking::hookFunc(reinterpret_cast<void*>(eleven_args), reinterpret_cast<void*>(eleven_args_hook), 9);
 	assert(orig_eleven_args != nullptr);
 	printf("Hooked eleven_args with eleven_args_hook\n");
+	
+	// We have to be very careful so we don't create 2 seperate call instructions
+	for(int i = 0; i <= 1; i++) {
+		assert(hookMe(1,2,3) == i == 0 ? 6 : 12);
+		if(i == 0) {
+			orig_hookMe = Framework::Hooking::relativePtrSwap(static_cast<char*>(hookMe_retaddr) - (FRAMEWORK_NEAR_JMP_LENGTH - 1), reinterpret_cast<void*>(hook));
+			assert(orig_hookMe != nullptr);
+		} else if(i == 1) {
+			printf("Hooked hookMe with hook using a ptr swap\n");
+		}
+	}
 	
 	// Testing whether or not you can reuse these invokers
 	for(int i = 0; i <= 2; i++) {

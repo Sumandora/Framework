@@ -13,7 +13,8 @@
 
 namespace Framework {
 	namespace Memory {
-		static void *findUnusedMemory(void *begin) { // begin being NULL will result in a random location being picked
+		// finds a memory page, which is at max 2 GB away from begin
+		static void *findUnusedMemory(void *begin) {
 			unsigned int pagesize = getpagesize();
 			unsigned long currentPage = (size_t) begin / pagesize;
 			unsigned long maxOffset = FRAMEWORK_TWO_GB / pagesize;
@@ -36,7 +37,8 @@ namespace Framework {
 			}
 			return nullptr;
 		}
-
+		
+		// This changes the protection for the entire memory page
 		static void protect(void *addr, int prot) {
 			unsigned long pagesize = sysconf(_SC_PAGESIZE);
 			void *aligned = (char *) ((((intptr_t) addr) + pagesize - 1) & ~(pagesize - 1)) - pagesize;
