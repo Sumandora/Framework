@@ -13,6 +13,7 @@
 
 namespace Framework {
 	namespace Memory {
+#if defined(ENABLE_HOOKING_DETOUR) || defined(ENABLE_HOOKING_PTRSWAP)
 		// finds a memory page, which is at max 2 GB away from begin
 		static void *findUnusedMemory(void *begin) {
 			unsigned int pagesize = getpagesize();
@@ -37,7 +38,9 @@ namespace Framework {
 			}
 			return nullptr;
 		}
-		
+#endif
+
+#if defined(ENABLE_RETURN_ADDRESS) || defined(ENABLE_HOOKING_DETOUR)
 		// This changes the protection for the entire memory page
 		static void protect(void *addr, int prot) {
 			unsigned long pagesize = sysconf(_SC_PAGESIZE);
@@ -45,6 +48,7 @@ namespace Framework {
 			mprotect(aligned, pagesize, prot);
 		}
 	}
+#endif
 }
 
 #endif //FRAMEWORK_MEMORY_H

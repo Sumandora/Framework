@@ -11,6 +11,7 @@
 
 namespace Framework {
 	namespace Assembly {
+#ifdef ENABLE_HOOKING_DETOUR
 		static void writeNearJmp(void *addr, void *goal) {
 			unsigned char jmpInstruction[] = {
 				0xE9, 0x0, 0x0, 0x0, 0x0 // jmp goal
@@ -22,7 +23,8 @@ namespace Framework {
 			memcpy(jmpInstruction + 1, &jmpTarget, sizeof(jmpInstruction) - 1 /* E9 */);
 			memcpy(addr, jmpInstruction, sizeof(jmpInstruction));
 		}
-		
+#endif
+
 		/*
 		 * The following 2 methods both use r15 as register
 		 * It appears, that the System V ABI does not explicitly define a use for r12-r15 + a few others
@@ -34,6 +36,7 @@ namespace Framework {
 		 * e.g. jmp/call instructions get longer when using certain registers (including r15)
 		 * So we might end up wasting a byte, which would be a pretty porely designed code
 		 */
+#ifdef ENABLE_RETURN_ADDRESS
 		static void writeAbsPush(void *addr, void *value) {
 			unsigned char absPushInstruction[] = {
 				0x49, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r15, value
@@ -42,7 +45,9 @@ namespace Framework {
 			memcpy(absPushInstruction + 2, &value, sizeof(void *));
 			memcpy(addr, absPushInstruction, FRAMEWORK_ABS_PUSH_LENGTH);
 		}
+#endif
 
+#if defined(ENABLE_HOOKING_DETOUR) || defined(ENABLE_HOOKING_PTRSWAP)
 		static void writeAbsJmp(void *addr, void *goal) {
 			unsigned char absJumpInstructions[] = {
 				0x49, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r15, goal
@@ -51,6 +56,7 @@ namespace Framework {
 			memcpy(absJumpInstructions + 2, &goal, sizeof(void *));
 			memcpy(addr, absJumpInstructions, FRAMEWORK_ABS_JMP_LENGTH);
 		}
+#endif
 	}
 }
 

@@ -10,6 +10,7 @@
 
 namespace Framework {
 	namespace Hooking {
+#ifdef ENABLE_HOOKING_DETOUR
 		/*
 		 * There is no disassembler (yet; might never be)
 		 * So right now we have to hard code the amount of bytes, which have to be copied
@@ -50,19 +51,21 @@ namespace Framework {
 					0x90 /* NOP */,
 					instructionLength - FRAMEWORK_NEAR_JMP_LENGTH);
 				Memory::protect(original, PROT_READ | PROT_EXEC);
-				
+
 				// This is the point after the abs jmp, means right where the stolen bytes begin
 				return static_cast<char *>(unusedMemory) + FRAMEWORK_ABS_JMP_LENGTH;
 			} else {
 				return nullptr;
 			}
 		}
-		
+#endif
+
+#ifdef ENABLE_HOOKING_PTRSWAP
 		/*
 		 * This is a more secure method of hooking, but it requires a jmp/call instruction
 		 * It works by taking the location of the jmp/call and writing a new pointer, which points
 		 * to our hook, these hooks has to later call the original or match the return value.
-		 * This has the side-effect of not being able to hook all calls, but only one at 
+		 * This has the side-effect of not being able to hook all calls, but only one at
 		 */
 		static void *relativePtrSwap(void* original, void* hook) {
 			void *unusedMemory = Memory::findUnusedMemory(original);
@@ -80,11 +83,12 @@ namespace Framework {
 					(FRAMEWORK_NEAR_JMP_LENGTH - 1)));
 				memcpy(original, &relativeAddress, FRAMEWORK_NEAR_JMP_LENGTH - 1);
 				Memory::protect(original, PROT_READ | PROT_EXEC);
-				return realTarget; 
+				return realTarget;
 			} else {
 				return nullptr;
 			}
 		}
+#endif
 	}
 }
 

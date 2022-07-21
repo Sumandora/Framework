@@ -13,6 +13,7 @@
 
 namespace Framework {
 	namespace ReturnAddr {
+#ifdef ENABLE_RETURN_ADDRESS
 		/*
 		 * The return address spoofer expects this to be set
 		 * This has to be a byte-sequence which contains the following:
@@ -21,13 +22,16 @@ namespace Framework {
 		 */
 		static void *ret_instruction_addr = nullptr;
 		
+#ifdef ENABLE_PATTERN_SCANNING
 		// A pattern, which matches the data, which ret_instruction_addr should point at
 		static Pattern leave_ret_instruction(
 			"\xC9\xC3",
 			"xx"
 		);
+#endif
 
 		namespace {
+#ifdef ENABLE_PATTERN_SCANNING
 			/*
 			 * This pattern is used internally, to find the location of the jump instruction
 			 * This could in theory provide the wrong location, if we are really unlucky
@@ -37,6 +41,7 @@ namespace Framework {
 				"\xFF\x00\x00\x00\x00\x00\x90",
 				"x?????x"
 			);
+#endif
 			
 			// This is pretty hacky, but it works
 			__attribute((noinline)) void *rip() {
@@ -67,9 +72,19 @@ namespace Framework {
 					break;
 				}
 				void *instruction = rip();
-				
+
+#ifdef ENABLE_PATTERN_SCANNING
 				void *base = PatternScan::searchPattern(call_instruction, instruction);
-				
+#else
+				void *base = instruction;
+				while(
+					*static_cast<unsigned char*>(base) != 0xFF ||
+					*(static_cast<unsigned char*>(base) + 6) != 0x90
+				) {
+					base = static_cast<char*>(base) + 1;
+				}
+#endif
+
 				int callRegisterOffset = 1;
 				
 				// call r8-r15 instructions have a 0x41 modifier
@@ -118,6 +133,7 @@ namespace Framework {
 			);
 			// Indirect return, carrying the return value of method
 		}
+#endif
 	}
 }
 #endif //FRAMEWORK_RETURNADDR_H
