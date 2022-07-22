@@ -1,7 +1,3 @@
-//
-// Created by johannes on 4/17/22.
-//
-
 #ifndef FRAMEWORK_MEMORY_H
 #define FRAMEWORK_MEMORY_H
 
@@ -47,8 +43,8 @@ namespace Framework {
 			void *aligned = (char *) ((((intptr_t) addr) + pagesize - 1) & ~(pagesize - 1)) - pagesize;
 			mprotect(aligned, pagesize, prot);
 		}
-	}
 #endif
+	}
 }
 
 #endif //FRAMEWORK_MEMORY_H

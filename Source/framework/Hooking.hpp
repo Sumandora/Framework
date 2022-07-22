@@ -1,12 +1,8 @@
-//
-// Created by johannes on 4/17/22.
-//
-
 #ifndef FRAMEWORK_HOOKING_H
 #define FRAMEWORK_HOOKING_H
 
-#include "Assembly.h"
-#include "Memory.h"
+#include "Assembly.hpp"
+#include "Memory.hpp"
 
 namespace Framework {
 	namespace Hooking {
@@ -21,7 +17,7 @@ namespace Framework {
 		 * Loop through each instruction add its length onto a variable and as soon as the variable is bigger than FRAMEWORK_ABS_JMP_LENGTH (5)
 		 * Break out of the loop and pass this value into instructionLength
 		 */
-		static void *hookFunc(void *original, void *hook, int instructionLength) {
+		static void *detour(void *original, void *hook, int instructionLength) {
 			if (FRAMEWORK_NEAR_JMP_LENGTH > instructionLength) return nullptr;
 			void *unusedMemory = Memory::findUnusedMemory(original);
 			if (unusedMemory) {

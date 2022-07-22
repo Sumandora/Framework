@@ -1,12 +1,10 @@
-//
-// Created by johannes on 4/17/22.
-//
-
 #ifndef FRAMEWORK_PATTERNSCAN_H
 #define FRAMEWORK_PATTERNSCAN_H
 
 #include <cstring>
 #include <sstream>
+
+#ifdef ENABLE_PATTERN_SCANNING
 
 class Pattern {
 public:
@@ -46,4 +44,5 @@ namespace Framework {
 	}
 }
 
+#endif
 #endif //FRAMEWORK_PATTERNSCAN_H

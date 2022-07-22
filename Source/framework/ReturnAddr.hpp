@@ -1,15 +1,11 @@
-//
-// Created by johannes on 4/17/22.
-//
-
 #ifndef FRAMEWORK_RETURNADDR_H
 #define FRAMEWORK_RETURNADDR_H
 
 #include <mutex>
 
-#include "PatternScan.h"
-#include "Memory.h"
-#include "Assembly.h"
+#include "PatternScan.hpp"
+#include "Memory.hpp"
+#include "Assembly.hpp"
 
 namespace Framework {
 	namespace ReturnAddr {

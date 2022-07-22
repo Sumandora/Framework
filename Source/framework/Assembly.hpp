@@ -1,9 +1,7 @@
-//
-// Created by johannes on 4/17/22.
-//
-
 #ifndef FRAMEWORK_ASSEMBLY_H
 #define FRAMEWORK_ASSEMBLY_H
+
+#include <string.h>
 
 #define FRAMEWORK_NEAR_JMP_LENGTH 5
 #define FRAMEWORK_ABS_JMP_LENGTH 13
