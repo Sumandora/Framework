@@ -61,10 +61,7 @@ namespace Framework {
 					 * So this weird if-statement has to be here, this is also the reason
 					 * why the mutated-variable is being set to true before unlocking the mutex
 					 * If someone has a better/cleaner solution to this, please contribute it
-					 * Because the mutex just get locked again, lets clean it up by unlocking it
-					 * We will never need it again, but still have it cleaned up ^^
 					 */
-					mutex.unlock();
 					break;
 				}
 				void *instruction = rip();
@@ -106,7 +103,7 @@ namespace Framework {
 
 				Memory::protect(base, PROT_READ | PROT_EXEC);
 				mutated = true;
-				mutex.unlock();
+				mutex.unlock(); // Allow other threads to continue
 				break;
 			}
 			
