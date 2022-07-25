@@ -27,7 +27,7 @@ void* Pattern::searchPattern(void* begin, const void* end) {
 			break;
 		index++;
 	}
-	return static_cast<char *>(begin) + index;
+	return static_cast<char*>(begin) + index;
 }
 
 #endif

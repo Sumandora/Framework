@@ -66,13 +66,13 @@ namespace Framework {
 					 */
 					break;
 				}
-				void *instruction = rip();
+				void* instruction = rip();
 
 
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
-				void *base = call_instruction.searchPattern(instruction);
+				void* base = call_instruction.searchPattern(instruction);
 #else
-				void *base = instruction;
+				void* base = instruction;
 				while(
 					*static_cast<unsigned char*>(base) != 0xFF ||
 					*(static_cast<unsigned char*>(base) + 6) != 0x90
@@ -84,25 +84,25 @@ namespace Framework {
 				int callRegisterOffset = 1;
 				
 				// call r8-r15 instructions have a 0x41 modifier
-				if (*(static_cast<unsigned char *>(base) - 1) == 0x41) {
-					base = static_cast<char *>(base) - 1;
+				if (*(static_cast<unsigned char*>(base) - 1) == 0x41) {
+					base = static_cast<char*>(base) - 1;
 					callRegisterOffset++;
 				}
 				
 				// search the first nop instruction
 				int length = callRegisterOffset + 1 /* Register is one byte */;
-				while (*(static_cast<unsigned char *>(base) + length) != 0x90)
+				while (*(static_cast<unsigned char*>(base) + length) != 0x90)
 					length++;
 				
 				Memory::protect(base, PROT_READ | PROT_WRITE | PROT_EXEC);
 				
 				// move real code back
-				memcpy(static_cast<char *>(base) + 12, base, length);
+				memcpy(static_cast<char*>(base) + 12, base, length);
 				
-				Assembly::writeAbsPush(base, static_cast<char *>(ret_instruction_addr));
+				Assembly::writeAbsPush(base, static_cast<char*>(ret_instruction_addr));
 				
 				// convert call to jmp instruction
-				*(static_cast<char *>(base) + FRAMEWORK_ABS_PUSH_LENGTH + callRegisterOffset) += 0x10;
+				*(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH + callRegisterOffset) += 0x10;
 
 				Memory::protect(base, PROT_READ | PROT_EXEC);
 				mutated = true;

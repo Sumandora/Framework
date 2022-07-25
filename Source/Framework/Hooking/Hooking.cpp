@@ -24,14 +24,14 @@ void* Framework::Hooking::detour(void* original, void* hook, int instructionLeng
 		// Jmp into our code
 		Assembly::writeAbsJmp(unusedMemory, hook);
 		// Copy the stolen bytes
-		memcpy(static_cast<char *>(unusedMemory) + FRAMEWORK_ABS_JMP_LENGTH,
+		memcpy(static_cast<char*>(unusedMemory) + FRAMEWORK_ABS_JMP_LENGTH,
 			original,
 			instructionLength);
 		// Write the jmp back into the original code
 		Assembly::writeNearJmp(
-			static_cast<char *>(unusedMemory) + FRAMEWORK_ABS_JMP_LENGTH +
+			static_cast<char*>(unusedMemory) + FRAMEWORK_ABS_JMP_LENGTH +
 			instructionLength,
-			static_cast<char *>(original) + FRAMEWORK_NEAR_JMP_LENGTH);
+			static_cast<char*>(original) + FRAMEWORK_NEAR_JMP_LENGTH);
 		Memory::protect(unusedMemory, PROT_READ | PROT_EXEC);
 
 		Memory::protect(original, PROT_READ | PROT_WRITE | PROT_EXEC);
@@ -43,13 +43,13 @@ void* Framework::Hooking::detour(void* original, void* hook, int instructionLeng
 		 * On the other side, anticheats shouldn't care about it either, they ban you
 		 * as soon as they see the jmp instruction at the beginning, they ban you anyway
 		 */
-		memset(static_cast<char *>(original) + FRAMEWORK_NEAR_JMP_LENGTH,
+		memset(static_cast<char*>(original) + FRAMEWORK_NEAR_JMP_LENGTH,
 			0x90 /* NOP */,
 			instructionLength - FRAMEWORK_NEAR_JMP_LENGTH);
 		Memory::protect(original, PROT_READ | PROT_EXEC);
 
 		// This is the point after the abs jmp, means right where the stolen bytes begin
-		return static_cast<char *>(unusedMemory) + FRAMEWORK_ABS_JMP_LENGTH;
+		return static_cast<char*>(unusedMemory) + FRAMEWORK_ABS_JMP_LENGTH;
 	} else {
 		return nullptr;
 	}
@@ -74,8 +74,8 @@ void* Framework::Hooking::relativePtrSwap(void* original, void* hook) {
 		void* realTarget = static_cast<char*>(original) +
 			(FRAMEWORK_NEAR_JMP_LENGTH - 1) +
 			*reinterpret_cast<int*>(original);
-		void *relativeAddress = reinterpret_cast<void *>(static_cast<char *>(unusedMemory) -
-			(static_cast<char *>(original) +
+		void *relativeAddress = reinterpret_cast<void *>(static_cast<char*>(unusedMemory) -
+			(static_cast<char*>(original) +
 			(FRAMEWORK_NEAR_JMP_LENGTH - 1)));
 		memcpy(original, &relativeAddress, FRAMEWORK_NEAR_JMP_LENGTH - 1);
 		Memory::protect(original, PROT_READ | PROT_EXEC);

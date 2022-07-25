@@ -5,15 +5,15 @@
 
 class Pattern {
 private:
-	const char *signature;
-	const char *mask;
+	const char* signature;
+	const char* mask;
 
 	unsigned int length;
 
 public:
-	Pattern(const char *signature, const char *mask) noexcept;
+	Pattern(const char* signature, const char* mask) noexcept;
 
-	void *searchPattern(void *begin, const void *end = nullptr);
+	void *searchPattern(void* begin, const void* end = nullptr);
 };
 
 #endif

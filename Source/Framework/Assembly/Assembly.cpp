@@ -3,13 +3,13 @@
 #include <string.h>
 
 #ifdef FRAMEWORK_ENABLE_HOOKING_DETOUR
-void Framework::Assembly::writeNearJmp(void *addr, void *goal) {
+void Framework::Assembly::writeNearJmp(void* addr, void* goal) {
 	unsigned char jmpInstruction[] = {
 		0xE9, 0x0, 0x0, 0x0, 0x0 // jmp goal
 	};
 	// Calculation for a relative jmp
-	void *jmpTarget = reinterpret_cast<void *>(static_cast<char *>(goal) -
-		(static_cast<char *>(addr) +
+	void* jmpTarget = reinterpret_cast<void*>(static_cast<char*>(goal) -
+		(static_cast<char*>(addr) +
 		FRAMEWORK_NEAR_JMP_LENGTH)); // Jumps always start at the rip, which has already increased
 	memcpy(jmpInstruction + 1, &jmpTarget, sizeof(jmpInstruction) - 1 /* E9 */);
 	memcpy(addr, jmpInstruction, sizeof(jmpInstruction));
@@ -28,23 +28,23 @@ void Framework::Assembly::writeNearJmp(void *addr, void *goal) {
  * So we might end up wasting a byte, which would be a pretty porely designed code
  */
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
-void Framework::Assembly::writeAbsPush(void *addr, void *value) {
+void Framework::Assembly::writeAbsPush(void* addr, void* value) {
 	unsigned char absPushInstruction[] = {
 		0x49, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r15, value
 		0x41, 0x57 //push r15
 	};
-	memcpy(absPushInstruction + 2, &value, sizeof(void *));
+	memcpy(absPushInstruction + 2, &value, sizeof(void*));
 	memcpy(addr, absPushInstruction, FRAMEWORK_ABS_PUSH_LENGTH);
 }
 #endif
 
 #if defined(FRAMEWORK_ENABLE_HOOKING_DETOUR) || defined(FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
-void Framework::Assembly::writeAbsJmp(void *addr, void *goal) {
+void Framework::Assembly::writeAbsJmp(void* addr, void* goal) {
 	unsigned char absJumpInstructions[] = {
 		0x49, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r15, goal
 		0x41, 0xFF, 0xE7 //jmp r15
 	};
-	memcpy(absJumpInstructions + 2, &goal, sizeof(void *));
+	memcpy(absJumpInstructions + 2, &goal, sizeof(void*));
 	memcpy(addr, absJumpInstructions, FRAMEWORK_ABS_JMP_LENGTH);
 }
 #endif
