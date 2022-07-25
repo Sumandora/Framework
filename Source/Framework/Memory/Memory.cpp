@@ -19,7 +19,7 @@ void* Framework::Memory::findUnusedMemory(void* begin) {
 			if (sign < 0 && offset > currentPage) continue;
 			unsigned long page = currentPage + offset * sign;
 			void* pointer = mmap(
-				reinterpret_cast<void *>(page * pagesize),
+				reinterpret_cast<void*>(page * pagesize),
 				pagesize,
 				PROT_READ | PROT_WRITE | PROT_EXEC,
 				MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE,
@@ -38,7 +38,7 @@ void* Framework::Memory::findUnusedMemory(void* begin) {
 #if defined(FRAMEWORK_ENABLE_RETURN_ADDRESS) || defined(FRAMEWORK_ENABLE_HOOKING_DETOUR)
 void Framework::Memory::protect(void* addr, int prot) {
 	unsigned long pagesize = sysconf(_SC_PAGESIZE);
-	void *aligned = reinterpret_cast<char*>((reinterpret_cast<uintptr_t>(addr) + pagesize - 1) & ~(pagesize - 1)) - pagesize;
+	void* aligned = reinterpret_cast<char*>((reinterpret_cast<uintptr_t>(addr) + pagesize - 1) & ~(pagesize - 1)) - pagesize;
 	mprotect(aligned, pagesize, prot);
 }
 #endif

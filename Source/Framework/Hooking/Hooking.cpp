@@ -74,7 +74,7 @@ void* Framework::Hooking::relativePtrSwap(void* original, void* hook) {
 		void* realTarget = static_cast<char*>(original) +
 			(FRAMEWORK_NEAR_JMP_LENGTH - 1) +
 			*reinterpret_cast<int*>(original);
-		void *relativeAddress = reinterpret_cast<void *>(static_cast<char*>(unusedMemory) -
+		void* relativeAddress = reinterpret_cast<void*>(static_cast<char*>(unusedMemory) -
 			(static_cast<char*>(original) +
 			(FRAMEWORK_NEAR_JMP_LENGTH - 1)));
 		memcpy(original, &relativeAddress, FRAMEWORK_NEAR_JMP_LENGTH - 1);
