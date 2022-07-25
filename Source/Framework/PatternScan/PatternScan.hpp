@@ -11,10 +11,7 @@ private:
 	unsigned int length;
 
 public:
-	Pattern(const char *signature, const char *mask) noexcept {
-		this->signature = signature;
-		this->mask = mask;
-	}
+	Pattern(const char *signature, const char *mask) noexcept;
 
 	void *searchPattern(void *begin, const void *end = nullptr);
 };
