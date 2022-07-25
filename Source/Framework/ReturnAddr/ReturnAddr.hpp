@@ -70,7 +70,7 @@ namespace Framework {
 
 
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
-				void *base = PatternScan::searchPattern(call_instruction, instruction);
+				void *base = call_instruction.searchPattern(instruction);
 #else
 				void *base = instruction;
 				while(

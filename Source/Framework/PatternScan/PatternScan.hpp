@@ -4,23 +4,20 @@
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 
 class Pattern {
-public:
+private:
 	const char *signature;
 	const char *mask;
 
 	unsigned int length;
 
+public:
 	Pattern(const char *signature, const char *mask) noexcept {
 		this->signature = signature;
 		this->mask = mask;
 	}
-};
 
-namespace Framework {
-	namespace PatternScan {
-		void *searchPattern(Pattern pattern, void *begin, const void *end = nullptr);
-	}
-}
+	void *searchPattern(void *begin, const void *end = nullptr);
+};
 
 #endif
 #endif
