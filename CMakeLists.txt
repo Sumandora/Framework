@@ -18,21 +18,26 @@ option(PATTERN_SCANNING "Enables support for pattern scanning" ON)
 option(RETURN_ADDRESS "Enables support for return address spoofing" ON)
 
 add_executable(Framework
-	Source/tests/Main.cpp
+	Source/Framework/Hooking/Hooking.cpp
+	Source/Framework/Memory/Memory.cpp
+	Source/Framework/Assembly/Assembly.cpp
+	Source/Framework/PatternScan/PatternScan.cpp
+
+	Source/Tests/Main.cpp
 )
 
 if(HOOKING_DETOUR)
-	target_compile_definitions(Framework PUBLIC ENABLE_HOOKING_DETOUR)
+	target_compile_definitions(Framework PUBLIC FRAMEWORK_ENABLE_HOOKING_DETOUR)
 endif()
 
 if(HOOKING_PTRSWAP)
-	target_compile_definitions(Framework PUBLIC ENABLE_HOOKING_PTRSWAP)
+	target_compile_definitions(Framework PUBLIC FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
 endif()
 
 if(PATTERN_SCANNING)
-	target_compile_definitions(Framework PUBLIC ENABLE_PATTERN_SCANNING)
+	target_compile_definitions(Framework PUBLIC FRAMEWORK_ENABLE_PATTERN_SCANNING)
 endif()
 
 if(RETURN_ADDRESS)
-	target_compile_definitions(Framework PUBLIC ENABLE_RETURN_ADDRESS)
+	target_compile_definitions(Framework PUBLIC FRAMEWORK_ENABLE_RETURN_ADDRESS)
 endif()

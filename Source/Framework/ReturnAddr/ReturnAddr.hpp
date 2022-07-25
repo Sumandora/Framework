@@ -1,24 +1,26 @@
 #ifndef FRAMEWORK_RETURNADDR_H
 #define FRAMEWORK_RETURNADDR_H
 
-#include <mutex>
+#include "../PatternScan/PatternScan.hpp"
+#include "../Memory/Memory.hpp"
+#include "../Assembly/Assembly.hpp"
 
-#include "PatternScan.hpp"
-#include "Memory.hpp"
-#include "Assembly.hpp"
+#include <mutex>
+#include <sys/mman.h>
+#include <cstring>
 
 namespace Framework {
 	namespace ReturnAddr {
-#ifdef ENABLE_RETURN_ADDRESS
+#ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
 		/*
 		 * The return address spoofer expects this to be set
 		 * This has to be a byte-sequence which contains the following:
 		 * c9	leave
 		 * c3	ret
 		 */
-		static void *ret_instruction_addr = nullptr;
+		static void* ret_instruction_addr;
 		
-#ifdef ENABLE_PATTERN_SCANNING
+#ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 		// A pattern, which matches the data, which ret_instruction_addr should point at
 		static Pattern leave_ret_instruction(
 			"\xC9\xC3",
@@ -27,26 +29,26 @@ namespace Framework {
 #endif
 
 		namespace {
-#ifdef ENABLE_PATTERN_SCANNING
+#ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 			/*
 			 * This pattern is used internally, to find the location of the jump instruction
 			 * This could in theory provide the wrong location, if we are really unlucky
 			 * In this case more NOP instructions should be provided
 			 */
 			Pattern call_instruction(
-				"\xFF\x00\x00\x00\x00\x00\x90",
-				"x?????x"
+				"\xFF\x00\x00\x00\x00\x00\x90\x90\x90\x90\x90\x90\x90\x90",
+				"x?????xxxxxxxx"
 			);
 #endif
-			
+
 			// This is pretty hacky, but it works
-			__attribute((noinline)) void *rip() {
+			__attribute((noinline)) void* rip() {
 				return __builtin_extract_return_addr(__builtin_return_address(0));
 			}
 		}
-		
+
 		template<typename Ret, typename... Args>
-		static __attribute((noinline, optimize("O0"))) auto invoke(void *method, Args... args) -> Ret {
+		static __attribute((noinline, optimize("O0"))) auto invoke(void* method, Args... args) -> Ret {
 			static bool mutated = false;
 			static std::mutex mutex;
 
@@ -66,7 +68,8 @@ namespace Framework {
 				}
 				void *instruction = rip();
 
-#ifdef ENABLE_PATTERN_SCANNING
+
+#ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 				void *base = PatternScan::searchPattern(call_instruction, instruction);
 #else
 				void *base = instruction;
@@ -77,7 +80,7 @@ namespace Framework {
 					base = static_cast<char*>(base) + 1;
 				}
 #endif
-
+				
 				int callRegisterOffset = 1;
 				
 				// call r8-r15 instructions have a 0x41 modifier
@@ -127,6 +130,8 @@ namespace Framework {
 			// Indirect return, carrying the return value of method
 		}
 #endif
+
 	}
 }
-#endif //FRAMEWORK_RETURNADDR_H
+#endif
+
