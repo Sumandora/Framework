@@ -77,6 +77,7 @@ namespace Framework {
 				void* base = call_instruction.searchPattern(instruction);
 #else
 				void* base = instruction;
+				//TODO Update
 				while(
 					*static_cast<unsigned char*>(base) != 0xFF ||
 					*(static_cast<unsigned char*>(base) + 6) != 0x90
@@ -100,8 +101,13 @@ namespace Framework {
 				
 				Memory::protect(base, PROT_READ | PROT_WRITE | PROT_EXEC);
 				
-				// move real code back
-				memcpy(static_cast<char*>(base) + 12, base, length);
+				// move real code back; This no longer uses memcpy, because it lead to segfaults, which have a reason, which is beyond me.
+				// memcpy(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH, base, length);
+				int i = 0;
+				while (i < length) {
+					*(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH + i) = *(static_cast<char*>(base) + i);
+					i++;
+				}
 				
 				Assembly::writeAbsPush(base, static_cast<char*>(ret_instruction_addr));
 				
