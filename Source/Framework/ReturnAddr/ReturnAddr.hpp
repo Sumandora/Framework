@@ -53,6 +53,12 @@ namespace Framework {
 			static std::mutex mutex;
 
 			while (!mutated) { // Only being run once (in theory; multithreading), for the ability to break anytime
+				if(!ret_instruction_addr) {
+					// The user hasn't set it yet ._.
+					// Alert his debugger if he has one attached
+					__asm ("int3");
+					return NULL;
+				}
 				mutex.lock();
 				if(mutated) {
 					/*
