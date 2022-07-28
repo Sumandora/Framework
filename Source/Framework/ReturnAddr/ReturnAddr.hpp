@@ -57,7 +57,6 @@ namespace Framework {
 					// The user hasn't set it yet ._.
 					// Alert his debugger if he has one attached
 					__asm ("int3");
-					return NULL;
 				}
 				mutex.lock();
 				if(mutated) {
