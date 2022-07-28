@@ -12,14 +12,6 @@
 namespace Framework {
 	namespace ReturnAddr {
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
-		/*
-		 * The return address spoofer expects this to be set
-		 * This has to be a byte-sequence which contains the following:
-		 * c9	leave
-		 * c3	ret
-		 */
-		static void* ret_instruction_addr;
-		
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 		// A pattern, which matches the data, which ret_instruction_addr should point at
 		static Pattern leave_ret_instruction(
@@ -47,8 +39,15 @@ namespace Framework {
 			}
 		}
 
+		/*
+		 * Explanation for ret_instruction_addr:
+		 * The return address spoofer expects this to be set
+		 * This has to be a byte-sequence which contains the following:
+		 * c9	leave
+		 * c3	ret
+		 */
 		template<typename Ret, typename... Args>
-		static __attribute((noinline, optimize("O0"))) auto invoke(void* method, Args... args) -> Ret {
+		static __attribute((noinline, optimize("O0"))) auto invoke(void* method, void* ret_instruction_addr, Args... args) -> Ret {
 			static bool mutated = false;
 			static std::mutex mutex;
 

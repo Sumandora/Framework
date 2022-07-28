@@ -22,10 +22,11 @@ int hook(int a, int b, int c) {
 
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
 const int argumentLength = 1000 * 1000 * 8; // approximate the maximum that the stack can handle
+void* ret_instruction_addr;
 
 // We need a array, which specifies
 int testFunction(char str[argumentLength]) {
-	assert(__builtin_extract_return_addr(__builtin_return_address(0)) == Framework::ReturnAddr::ret_instruction_addr);
+	assert(__builtin_extract_return_addr(__builtin_return_address(0)) == ret_instruction_addr);
 	return strlen(str);
 }
 #endif
@@ -62,7 +63,8 @@ int __attribute((optimize("O0"))) main() {
 #endif
 
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
-	Framework::ReturnAddr::ret_instruction_addr =
+	
+	ret_instruction_addr =
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 		Framework::ReturnAddr::leave_ret_instruction.searchPattern(
 			reinterpret_cast<void*>(main)
@@ -71,19 +73,19 @@ int __attribute((optimize("O0"))) main() {
 		reinterpret_cast<void*>(main);
 	
 	while(
-		*static_cast<unsigned char*>(Framework::ReturnAddr::ret_instruction_addr) != 0xC9 ||
-		*(static_cast<unsigned char*>(Framework::ReturnAddr::ret_instruction_addr) + 1) != 0xC3
+		*static_cast<unsigned char*>(ret_instruction_addr) != 0xC9 ||
+		*(static_cast<unsigned char*>(ret_instruction_addr) + 1) != 0xC3
 	) {
-		Framework::ReturnAddr::ret_instruction_addr = static_cast<char*>(Framework::ReturnAddr::ret_instruction_addr) + 1;
+		ret_instruction_addr = static_cast<char*>(ret_instruction_addr) + 1;
 	}
 #endif
-	assert(Framework::ReturnAddr::ret_instruction_addr != nullptr);
+	assert(ret_instruction_addr != nullptr);
 	
 	char str[argumentLength];
 	for(int i = 0; i < argumentLength; i++)
 		str[i] = 'A';
 	
-	int length = Framework::ReturnAddr::invoke<int, char[]>(reinterpret_cast<void*>(testFunction), str);
+	int length = Framework::ReturnAddr::invoke<int, char[]>(reinterpret_cast<void*>(testFunction), ret_instruction_addr, str);
 	// Running this on different environments produced other values... one was +4, one was +6, idc
 	assert(length >= argumentLength && length <= argumentLength + 16);
 	printf("Ran Return Address tests\n");
