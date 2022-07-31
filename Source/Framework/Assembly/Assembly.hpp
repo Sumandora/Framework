@@ -2,8 +2,8 @@
 #define FRAMEWORK_ASSEMBLY_H
 
 #define FRAMEWORK_NEAR_JMP_LENGTH 5
-#define FRAMEWORK_ABS_JMP_LENGTH 13
-#define FRAMEWORK_ABS_PUSH_LENGTH 12
+#define FRAMEWORK_ABS_JMP_LENGTH 12
+#define FRAMEWORK_ABS_PUSH_LENGTH 11
 
 namespace Framework {
 	namespace Assembly {

@@ -17,6 +17,7 @@ void Framework::Assembly::writeNearJmp(void* addr, void* goal) {
 #endif
 
 /*
+ * --OUTDATED--
  * The following 2 methods both use r15 as register
  * It appears, that the System V ABI does not explicitly define a use for r12-r15 + a few others
  * So gcc does not use it extensively
@@ -26,12 +27,21 @@ void Framework::Assembly::writeNearJmp(void* addr, void* goal) {
  * instructions change their encoding, because of addressing attributes
  * e.g. jmp/call instructions get longer when using certain registers (including r15)
  * So we might end up wasting a byte, which would be a pretty porely designed code
+ * --OUTDATED--
+ * 
+ * NEW EXPLAINATION:
+ * It is correct, that r15 is not used often, but the context we use these both functions in
+ * makes rax a way better bet
+ * The only problem:
+ * When hooking mid-function this could overwrite the contents of rax.
+ * Hooking mid is considered unsafe even when using r15, so this is not
+ * a issue for me
  */
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
 void Framework::Assembly::writeAbsPush(void* addr, void* value) {
 	unsigned char absPushInstruction[] = {
-		0x49, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r15, value
-		0x41, 0x57 //push r15
+		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax, value
+		0x50 //push rax
 	};
 	memcpy(absPushInstruction + 2, &value, sizeof(void*));
 	memcpy(addr, absPushInstruction, FRAMEWORK_ABS_PUSH_LENGTH);
@@ -41,8 +51,8 @@ void Framework::Assembly::writeAbsPush(void* addr, void* value) {
 #if defined(FRAMEWORK_ENABLE_HOOKING_DETOUR) || defined(FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
 void Framework::Assembly::writeAbsJmp(void* addr, void* goal) {
 	unsigned char absJumpInstructions[] = {
-		0x49, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r15, goal
-		0x41, 0xFF, 0xE7 //jmp r15
+		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax, goal
+		0xFF, 0xE0 //jmp rax
 	};
 	memcpy(absJumpInstructions + 2, &goal, sizeof(void*));
 	memcpy(addr, absJumpInstructions, FRAMEWORK_ABS_JMP_LENGTH);
