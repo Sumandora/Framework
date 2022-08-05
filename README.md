@@ -12,8 +12,6 @@ Pointer Swapping works well and should be used in order to bypass anticheats, wh
 ### Return Address Spoofing
 Return Address Spoofing uses a dynarec-like approach and thus is a hell for the gcc-optimizer.  
 All methods have received anti-optimization attributes respectively.  
-Before using the spoofer a ``ret_instruction_addr`` variable has to be set.  
-More details in the respective file and test
 
 ### Usage
 This framework can be implemented in multiple ways.  
