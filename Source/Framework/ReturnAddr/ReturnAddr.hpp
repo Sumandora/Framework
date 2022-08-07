@@ -22,11 +22,7 @@ namespace Framework {
 
 		namespace {
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
-			/*
-			 * This pattern is used internally, to find the location of the jump instruction
-			 * This could in theory provide the wrong location, if we are really unlucky
-			 * In this case more NOP instructions should be provided
-			 */
+			// This pattern is used internally, to find the location of the jump instruction
 			Pattern call_instruction(
 				"\xFF\x00\x00\x00\x00\x00\x90\x90\x90\x90\x90\x90\x90\x90",
 				"x?????xxxxxxxx"
@@ -77,10 +73,16 @@ namespace Framework {
 				void* base = call_instruction.searchPattern(instruction);
 #else
 				void* base = instruction;
-				//TODO Update
 				while(
 					*static_cast<unsigned char*>(base) != 0xFF ||
-					*(static_cast<unsigned char*>(base) + 6) != 0x90
+					*(static_cast<unsigned char*>(base) + 6) != 0x90 ||
+					*(static_cast<unsigned char*>(base) + 7) != 0x90 ||
+					*(static_cast<unsigned char*>(base) + 8) != 0x90 ||
+					*(static_cast<unsigned char*>(base) + 9) != 0x90 ||
+					*(static_cast<unsigned char*>(base) + 10) != 0x90 ||
+					*(static_cast<unsigned char*>(base) + 11) != 0x90 ||
+					*(static_cast<unsigned char*>(base) + 12) != 0x90 ||
+					*(static_cast<unsigned char*>(base) + 13) != 0x90
 				) {
 					base = static_cast<char*>(base) + 1;
 				}
