@@ -12,21 +12,21 @@
 namespace Framework {
 	namespace ReturnAddr {
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
-#ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
-		// A pattern, which matches the data, which ret_instruction_addr should point at
-		static Pattern leave_ret_instruction(
-			"\xC9\xC3",
-			"xx"
-		);
-#endif
+// #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
+		// // A pattern, which matches the data, which ret_instruction_addr should point at
+		// static Pattern leave_ret_instruction(
+			// "\xC9\xC3",
+			// "xx"
+		// );
+// #endif
 
 		namespace {
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 			// This pattern is used internally, to find the location of the jump instruction
-			Pattern call_instruction(
-				"\xFF\x00\x00\x00\x00\x00\x90\x90\x90\x90\x90\x90\x90\x90",
-				"x?????xxxxxxxx"
-			);
+			// Pattern call_instruction(
+				// "\xFF\x00\x00\x00\x00\x00\x90\x90\x90\x90\x90\x90\x90\x90",
+				// "x?????xxxxxxxx"
+			// );
 #endif
 
 			// This is pretty hacky, but it works
@@ -69,9 +69,9 @@ namespace Framework {
 				void* instruction = rip();
 
 
-#ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
-				void* base = call_instruction.searchPattern(instruction);
-#else
+// #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
+				// void* base = call_instruction.searchPattern(instruction);
+// #else
 				void* base = instruction;
 				while(
 					*static_cast<unsigned char*>(base) != 0xFF ||
@@ -86,7 +86,7 @@ namespace Framework {
 				) {
 					base = static_cast<char*>(base) + 1;
 				}
-#endif
+// #endif
 				
 				int callRegisterOffset = 1;
 				

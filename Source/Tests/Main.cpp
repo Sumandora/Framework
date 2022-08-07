@@ -65,11 +65,11 @@ int __attribute((optimize("O0"))) main() {
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
 	
 	ret_instruction_addr =
-#ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
-		Framework::ReturnAddr::leave_ret_instruction.searchPattern(
-			reinterpret_cast<void*>(main)
-		);
-#else
+// #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
+		// Framework::ReturnAddr::leave_ret_instruction.searchPattern(
+			// reinterpret_cast<void*>(main)
+		// );
+// #else
 		reinterpret_cast<void*>(main);
 	
 	while(
@@ -78,7 +78,7 @@ int __attribute((optimize("O0"))) main() {
 	) {
 		ret_instruction_addr = static_cast<char*>(ret_instruction_addr) + 1;
 	}
-#endif
+// #endif
 	assert(ret_instruction_addr != nullptr);
 	
 	char str[argumentLength];
