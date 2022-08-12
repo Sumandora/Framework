@@ -11,7 +11,7 @@
  * So right now we have to hard code the amount of bytes, which have to be copied
  * This can change on recompilation, so in case you are crashing, check if the instructionLength-variable
  * is still set to a valid amount of bytes
- * It also has be bigger than the near jmp length (FRAMEWORK_ABS_JMP_LENGTH)
+ * It also has be bigger than the near jmp length (FRAMEWORK_NEAR_JMP_LENGTH)
  * Using a disassembler with this layout should be easy
  * Loop through each instruction add its length onto a variable and as soon as the variable is bigger than FRAMEWORK_NEAR_JMP_LENGTH (5)
  * Break out of the loop and pass this value into instructionLength
