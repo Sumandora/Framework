@@ -59,8 +59,8 @@ void* Framework::Hooking::detour(void* original, void* hook, int instructionLeng
 /*
  * This is a more secure method of hooking, but it requires a jmp/call instruction
  * It works by taking the location of the jmp/call and writing a new pointer, which points
- * to our hook, these hooks has to later call the original or match the return value.
- * This has the side-effect of not being able to hook all calls, but only one
+ * to our hook, These hooks have to later call the original or match the return value.
+ * This has the side-effect of not being able to hook all calls, but only one.
  */
 #ifdef FRAMEWORK_ENABLE_HOOKING_PTRSWAP
 void* Framework::Hooking::relativePtrSwap(void* original, void* hook) {
