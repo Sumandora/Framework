@@ -14,6 +14,7 @@ public:
 	Pattern(const char* signature, const char* mask) noexcept;
 
 	void* searchPattern(void* begin, const void* end = nullptr);
+	bool matchPattern(void* addr);
 };
 
 #endif
