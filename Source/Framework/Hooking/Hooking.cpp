@@ -11,9 +11,9 @@
  * So right now we have to hard code the amount of bytes, which have to be copied
  * This can change on recompilation, so in case you are crashing, check if the instructionLength-variable
  * is still set to a valid amount of bytes
- * It also has be bigger than the near jmp length (FRAMEWORK_ABS_JMP_LENGTH)
+ * It also has be bigger than the near jmp length (FRAMEWORK_NEAR_JMP_LENGTH)
  * Using a disassembler with this layout should be easy
- * Loop through each instruction add its length onto a variable and as soon as the variable is bigger than FRAMEWORK_ABS_JMP_LENGTH (5)
+ * Loop through each instruction add its length onto a variable and as soon as the variable is bigger than FRAMEWORK_NEAR_JMP_LENGTH (5)
  * Break out of the loop and pass this value into instructionLength
  */
 #ifdef FRAMEWORK_ENABLE_HOOKING_DETOUR
@@ -59,8 +59,8 @@ void* Framework::Hooking::detour(void* original, void* hook, int instructionLeng
 /*
  * This is a more secure method of hooking, but it requires a jmp/call instruction
  * It works by taking the location of the jmp/call and writing a new pointer, which points
- * to our hook, these hooks has to later call the original or match the return value.
- * This has the side-effect of not being able to hook all calls, but only one
+ * to our hook, These hooks have to later call the original or match the return value.
+ * This has the side-effect of not being able to hook all calls, but only one.
  */
 #ifdef FRAMEWORK_ENABLE_HOOKING_PTRSWAP
 void* Framework::Hooking::relativePtrSwap(void* original, void* hook) {
