@@ -103,6 +103,9 @@ namespace Framework {
 				
 				Memory::protect(base, PROT_READ | PROT_WRITE | PROT_EXEC);
 				
+				// If the method is split into 2 pages then we have to ensure that both of them are writable
+				Memory::protect(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH + length, PROT_READ | PROT_WRITE | PROT_EXEC);
+				
 				// move real code back; This no longer uses memcpy, because it lead to segfaults, which have a reason, which is beyond me.
 				// memcpy(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH, base, length);
 				int i = 0;
@@ -117,6 +120,8 @@ namespace Framework {
 				*(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH + callRegisterOffset) += 0x10;
 
 				Memory::protect(base, PROT_READ | PROT_EXEC);
+				Memory::protect(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH + length, PROT_READ | PROT_EXEC);
+				
 				mutated = true;
 				mutex.unlock(); // Allow other threads to continue
 				break;
