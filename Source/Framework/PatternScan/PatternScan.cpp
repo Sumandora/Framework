@@ -5,14 +5,10 @@
 
 #ifdef FRAMEWORK_ENABLE_PATTERN_SCANNING
 
-Pattern::Pattern(const char* signature, const char* mask) noexcept {
-	this->signature = signature;
-	this->mask = mask;
-	
-	this->length = strlen(mask);
-}
+Pattern::Pattern(const char *signature, const char *mask) noexcept
+    : signature(signature), mask(mask), length(strlen(mask)) {}
 
-void* Pattern::searchPattern(void* begin, const void* end) {
+void* Pattern::searchPattern(void* begin, const void* end) const {
 	unsigned int index = 0;
 	while (true) {
 		if (end != nullptr && static_cast<char*>(begin) + index + length > end)
@@ -24,7 +20,7 @@ void* Pattern::searchPattern(void* begin, const void* end) {
 	return static_cast<char*>(begin) + index;
 }
 
-bool Pattern::matchPattern(void* addr) {
+bool Pattern::matchPattern(void* addr) const {
 	for (unsigned int i = 0; i < length; i++)
 		if (mask[i] == 'x' && *(static_cast<unsigned char*>(addr) + i) != static_cast<unsigned char>(signature[i]))
 			return false;

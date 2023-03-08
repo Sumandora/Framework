@@ -8,13 +8,13 @@ private:
 	const char* signature;
 	const char* mask;
 
-	unsigned int length;
+	const unsigned int length;
 
 public:
 	Pattern(const char* signature, const char* mask) noexcept;
 
-	void* searchPattern(void* begin, const void* end = nullptr);
-	bool matchPattern(void* addr);
+	void* searchPattern(void* begin, const void* end = nullptr) const;
+	bool matchPattern(void* addr) const;
 };
 
 #endif

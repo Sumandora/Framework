@@ -9,7 +9,7 @@
 
 // Finds a memory page, which is at max 2 GB away from begin
 #if defined(FRAMEWORK_ENABLE_HOOKING_DETOUR) || defined(FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
-void* Framework::Memory::findUnusedMemory(void* begin) {
+void* Framework::Memory::findUnusedMemory(const void* begin) {
 	unsigned int pagesize = getpagesize();
 	unsigned long currentPage = reinterpret_cast<size_t>(begin) / pagesize;
 	unsigned long maxOffset = FRAMEWORK_TWO_GB / pagesize;
@@ -36,7 +36,7 @@ void* Framework::Memory::findUnusedMemory(void* begin) {
 
 // This changes the protection for the entire memory page
 #if defined(FRAMEWORK_ENABLE_RETURN_ADDRESS) || defined(FRAMEWORK_ENABLE_HOOKING_DETOUR)
-void Framework::Memory::protect(void* addr, int prot) {
+void Framework::Memory::protect(const void* addr, int prot) {
 	unsigned long pagesize = sysconf(_SC_PAGESIZE);
 	void* aligned = reinterpret_cast<char*>((reinterpret_cast<uintptr_t>(addr) + pagesize - 1) & ~(pagesize - 1)) - pagesize;
 	mprotect(aligned, pagesize, prot);
