@@ -8,15 +8,15 @@
 namespace Framework {
 	namespace Assembly {
 #ifdef FRAMEWORK_ENABLE_HOOKING_DETOUR
-		void writeNearJmp(void* addr, void* goal);
+		void writeNearJmp(void* addr, const void* goal);
 #endif
 
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
-		void writeAbsPush(void* addr, void* value);
+		void writeAbsPush(void* addr, const void* value);
 #endif
 
 #if defined(FRAMEWORK_ENABLE_HOOKING_DETOUR) || defined(FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
-		void writeAbsJmp(void* addr, void* goal);
+		void writeAbsJmp(void* addr, const void* goal);
 #endif
 	}
 }

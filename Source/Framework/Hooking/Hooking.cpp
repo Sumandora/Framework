@@ -17,7 +17,7 @@
  * Break out of the loop and pass this value into instructionLength
  */
 #ifdef FRAMEWORK_ENABLE_HOOKING_DETOUR
-void* Framework::Hooking::detour(void* original, void* hook, int instructionLength) {
+void* Framework::Hooking::detour(void* original, const void* hook, int instructionLength) {
 	if (FRAMEWORK_NEAR_JMP_LENGTH > instructionLength) return nullptr;
 	void* unusedMemory = Memory::findUnusedMemory(original);
 	if (unusedMemory) {
@@ -63,7 +63,7 @@ void* Framework::Hooking::detour(void* original, void* hook, int instructionLeng
  * This has the side-effect of not being able to hook all calls, but only one.
  */
 #ifdef FRAMEWORK_ENABLE_HOOKING_PTRSWAP
-void* Framework::Hooking::relativePtrSwap(void* original, void* hook) {
+void* Framework::Hooking::relativePtrSwap(void* original, const void* hook) {
 	void* unusedMemory = Memory::findUnusedMemory(original);
 	if(unusedMemory) {
 		// Jmp into our code

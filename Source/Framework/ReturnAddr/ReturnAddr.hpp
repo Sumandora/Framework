@@ -43,7 +43,7 @@ namespace Framework {
 		 * c3	ret
 		 */
 		template<typename Ret, typename... Args>
-		static __attribute((noinline, optimize("O0"))) auto invoke(void* method, void* ret_instruction_addr, Args... args) -> Ret {
+		static __attribute((noinline, optimize("O0"))) auto invoke(const void* method, const void* ret_instruction_addr, Args... args) -> Ret {
 			static bool mutated = false;
 			static std::mutex mutex;
 
@@ -114,7 +114,7 @@ namespace Framework {
 					i++;
 				}
 				
-				Assembly::writeAbsPush(base, static_cast<char*>(ret_instruction_addr));
+				Assembly::writeAbsPush(base, static_cast<const char*>(ret_instruction_addr));
 				
 				// convert call to jmp instruction
 				*(static_cast<char*>(base) + FRAMEWORK_ABS_PUSH_LENGTH + callRegisterOffset) += 0x10;

@@ -3,12 +3,12 @@
 #include <string.h>
 
 #ifdef FRAMEWORK_ENABLE_HOOKING_DETOUR
-void Framework::Assembly::writeNearJmp(void* addr, void* goal) {
+void Framework::Assembly::writeNearJmp(void* addr, const void* goal) {
 	unsigned char jmpInstruction[] = {
 		0xE9, 0x0, 0x0, 0x0, 0x0 // jmp goal
 	};
 	// Calculation for a relative jmp
-	void* jmpTarget = reinterpret_cast<void*>(static_cast<char*>(goal) -
+	void* jmpTarget = reinterpret_cast<void*>(static_cast<const char*>(goal) -
 		(static_cast<char*>(addr) +
 		FRAMEWORK_NEAR_JMP_LENGTH)); // Jumps always start at the rip, which has already increased
 	memcpy(jmpInstruction + 1, &jmpTarget, sizeof(jmpInstruction) - 1 /* E9 */);
@@ -38,7 +38,7 @@ void Framework::Assembly::writeNearJmp(void* addr, void* goal) {
  * a issue for me
  */
 #ifdef FRAMEWORK_ENABLE_RETURN_ADDRESS
-void Framework::Assembly::writeAbsPush(void* addr, void* value) {
+void Framework::Assembly::writeAbsPush(void* addr, const void* value) {
 	unsigned char absPushInstruction[] = {
 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax, value
 		0x50 //push rax
@@ -49,7 +49,7 @@ void Framework::Assembly::writeAbsPush(void* addr, void* value) {
 #endif
 
 #if defined(FRAMEWORK_ENABLE_HOOKING_DETOUR) || defined(FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
-void Framework::Assembly::writeAbsJmp(void* addr, void* goal) {
+void Framework::Assembly::writeAbsJmp(void* addr, const void* goal) {
 	unsigned char absJumpInstructions[] = {
 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax, goal
 		0xFF, 0xE0 //jmp rax
