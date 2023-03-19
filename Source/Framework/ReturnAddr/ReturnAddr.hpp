@@ -43,7 +43,7 @@ namespace Framework {
 		 * c3	ret
 		 */
 		template<typename Ret, typename... Args>
-		static __attribute((noinline, optimize("O0"))) auto invoke(const void* method, const void* ret_instruction_addr, Args... args) -> Ret {
+		static __attribute((noinline, optimize("O0"))) auto invoke(void* method, const void* ret_instruction_addr, Args... args) -> Ret {
 			static bool mutated = false;
 			static std::mutex mutex;
 
