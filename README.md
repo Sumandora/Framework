@@ -10,7 +10,7 @@ It describes the amount of bytes which are supposed to be copied into the proxy.
 Pointer Swapping works well and should be used in order to bypass anticheats, which simply check whether or not the opcodes from disk match
 
 ### Return Address Spoofing
-Return Address Spoofing uses a dynarec-like approach and thus is a hell for the gcc-optimizer.  
+Return Address Spoofing uses a self-modifying code approach and thus is a hell for the gcc-optimizer.  
 All methods have received anti-optimization attributes respectively.  
 
 ### Usage
