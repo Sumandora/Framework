@@ -1,6 +1,12 @@
 # Framework
 A framework made for usage in internal training softwares under GNU/Linux.
 
+## Deprecation
+### This project is deprecated. For improved alternatives check out these projects:
+- https://github.com/Sumandora/DetourHooking
+- https://github.com/Sumandora/ReturnAddressSpoofer
+- https://github.com/Sumandora/SignatureScanner
+
 ### Compilation
 Optimization can be used, but due to the self-modifying-code in the return address spoofer, the return address spoofer can't be optimized.
 
